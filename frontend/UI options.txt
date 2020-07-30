@@ -10,3 +10,4 @@ check boxes for what other kinds of specifications desired
         average 
         single
     4. we could add some stuff about specifying region(s) but I think we should only do that if we've finished everything else and want to polish it more.
+choose between AVL tree or standard BST
