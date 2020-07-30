@@ -1,0 +1,12 @@
+specify event type
+check boxes for what other kinds of specifications desired
+	1. date range (years only)
+        bottom value
+        top value
+    2. time range (measured in seconds) - if I have enough time I may allow for mm:ss format
+        bottom value
+        top value
+    3. average/single (radio buttons so you can only select one) (defaults to single if not specified)
+        average 
+        single
+    4. we could add some stuff about specifying region(s) but I think we should only do that if we've finished everything else and want to polish it more.
