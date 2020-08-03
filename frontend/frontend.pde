@@ -3,7 +3,7 @@ import java.util.*;
 
 ControlP5 cp5;
 JSONArray arr;
-String[] params = new String[6];
+String[] params = new String[7];
 Group[] groups = new Group[3];
 
 String alertMessage = "";
@@ -26,6 +26,7 @@ void setup() {
     cp5.addCheckBox("Options")
         .setPosition(25, 25)
         .setSize(20, 20)
+        .setFont(arial14)
         .setColorLabel(0)
         .addItem("Date Range", 1)
         .addItem("Time Range", 2)
@@ -107,7 +108,16 @@ void setup() {
         .setPosition(300, 25)
         ;
     
-    
+    cp5.addRadioButton("Tree Type")
+        .setSize(25, 25)
+        .setPosition(25, 100)
+        .addItem("AVL Tree", 1)
+        .addItem("Standard BST", 2)
+        .setFont(arial14)
+        .setColorLabel(0)
+        .setNoneSelectedAllowed(false)
+        .activate(0)
+        ;
 
     params[0] = "-1";
 }
@@ -176,6 +186,8 @@ void Go(){
         println("not taking params from group 2");
         params[5] = "1";
     }
+
+    params[6] = cp5.get(RadioButton.class, "Tree Type").getState(0) ? "1" : "0";
     println(params);
 }
 
