@@ -230,7 +230,7 @@ boolean isViableTime(String str){
     }
     try{
         float a = float(str);
-        if(a < 0){
+        if(a < 0 || Float.isNaN(a)){
             return false;
         }
     }
