@@ -5,57 +5,66 @@
 #include "Tree.hpp"
 #include <vector>
 
+template <typename K, typename V>
 class Map {
 public:
+	struct Pair {
+        K key;
+        V value;
 
-	//constructor
-	//
-	Map(Tree<int> *tree): mTree(tree){
-	}
+        Pair();
+        Pair(K key_); //valueless key. should only be used for comparisson with valued keys
+        Pair(K key_, V value_);
 
-	//insert
-	void insert(int x) {
-		mTree->insert(x);
-	}
+        bool operator>(const Pair& other) { return key > other.key;};
+        bool operator>=(const Pair& other) { return key >= other.key; };
+        bool operator<(const Pair& other) { return key < other.key; };
+        bool operator<=(const Pair& other) { return key <= other.key; };
+        bool operator==(const Pair& other) { return key == other.key; };
+        bool operator!=(const Pair& other) { return key != other.key; };
+    };
 
-	//remove
-	void remove(int x) {
-		mTree->remove(x);
-	}
+	V& operator[](K key);
+	void remove(K key);
 
-	//search
-	std::vector<Bucket> search(int from, int to);
 
-	//destructor
-	virtual ~Map() {
-		delete mTree;
-	}
+	virtual ~Map() = 0 {}
+	
 private:
-	Tree<int>* mTree;
+	Tree mapData;
 };
 
-//search
-std::vector<Bucket> Map::search(int from, int to){
-	
-	std::vector<Bucket> buckets; //10 buckets
+template <typename K, typename V>
+V& Map<K, V>::operator[](K key) {
+    try {
+        return mapData.getRef(Pair(key)).value;
+    }
+    catch (std::out_of_range&) {
+        return mapData.insert(Pair(key)).value;
+    }
+}
 
-	//create 10 buckets
-	double width = (double)(1 + (to - from - 9)) / 10.0;
+template <typename K, typename V>
+void Map<K, V>::remove(K key){
+	mapData.remove(Pair(key));
+}
 
-	int low = from;
-	for (size_t i = 1; i <= 10; i++)
-	{		
-		int high = (int)(low + width);
-		if (i == 10)
-		{
-			high = to;
-		}
+template <typename K, typename V>
+Map<K, V>::Pair::Pair() {
+    key = K();
+    value = V();
+}
 
-		buckets.push_back(Bucket(low, high, mTree->search(low, high)));
-		low = high + 1;
-	}
+template <typename K, typename V>
+Map<K, V>::Pair::Pair(K key_) {
+    key = key_;
+    value = V();
+}
 
-	return buckets;
+template <typename K, typename V>
+Map<K, V>::Pair::Pair(K key_, V value_) {
+    key = key_;
+    value = value_;
 }
 
 #endif
