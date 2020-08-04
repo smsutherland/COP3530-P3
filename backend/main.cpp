@@ -1,7 +1,5 @@
-#include "tree.hpp"
 #include "avl.hpp"
 #include "bst.hpp"
-#include "map.hpp"
 #include "AVLMap.hpp"
 #include "BSTMap.hpp"
 #include "Bucket.hpp"
@@ -37,7 +35,7 @@ int main() {
 	test(new AVLMap<int, string>());
 
 	cout << endl << "Test Map with BST" << endl;
-	//test(new BSTMap<int, string>());
+	test(new BSTMap<int, string>());
 
 	return 0;
 }

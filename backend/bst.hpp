@@ -6,7 +6,7 @@
 #include <stdexcept>
 
 template <typename T>
-class bstBase: public Tree<T> {
+class bst : public Tree<T> {
 	struct node {
 		T key;
 		node *left = nullptr;
@@ -17,12 +17,12 @@ class bstBase: public Tree<T> {
 	node *root = nullptr;
 public:
 
-	void insert(const T& x)
+	void insert(T& x)
 	{
 		root = insertUtil(root, x);
 	}
 
-	void remove(const T& x)
+	void remove(T& x)
 	{
 		root = removeUtil(root, x);
 	}
@@ -32,7 +32,7 @@ public:
 	}
 
 	//destructor
-	virtual ~bstBase() {
+	virtual ~bst() {
 		clear(root);
 	}
 
@@ -93,11 +93,11 @@ private:
 			throw std::out_of_range("This data is not in the tree.");
 		
 		if(x == current->key)
-			return current;
+			return current->key;
 		if(x > current->key)
-			return getRefUtil(current->right, x)->key;
+			return getRefUtil(current->right, x);
 		else
-			return getRefUtil(current->left, x)->key;
+			return getRefUtil(current->left, x);
 	}
 
 	// clear avl
