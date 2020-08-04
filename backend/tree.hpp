@@ -7,18 +7,13 @@ template <typename T>
 class Tree {
 public:
 
-	//insert
-	virtual void insert(const T& x) = 0;
+	virtual void insert(T& x) = 0;
 
-	//remove
-	virtual void remove(const T& x) = 0;
+	virtual void remove(T& x) = 0;
 
-	//search
-	virtual int search(const T& from, const T& to) const = 0;
+	virtual T& getRef(T& x) = 0;
 
-	//destructor
-	virtual ~Tree() {
-	}
+	virtual ~Tree() {}
 	
 };
 
