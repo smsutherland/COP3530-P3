@@ -3,7 +3,7 @@
 
 #include "Tree.hpp"
 #include <vector>
-#include <exception>
+#include <stdexcept>
 
 template <typename K, typename V>
 class Map {
@@ -28,25 +28,27 @@ public:
 	void remove(K key);
 
 
-	virtual ~Map() = 0 {}
+	virtual ~Map() = 0;
 	
-private:
-	Tree mapData;
+protected:
+	Tree<Pair>* mapData;
 };
 
 template <typename K, typename V>
 V& Map<K, V>::operator[](K key) {
     try {
-        return mapData.getRef(Pair(key)).value;
+        return mapData->getRef(Pair(key)).value;
     }
     catch (std::out_of_range&) {
-        return mapData.insert(Pair(key)).value;
+		Pair p(key);
+        mapData->insert(p);
+		return mapData->getRef(Pair(key)).value;
     }
 }
 
 template <typename K, typename V>
 void Map<K, V>::remove(K key){
-	mapData.remove(Pair(key));
+	mapData->remove(Pair(key));
 }
 
 template <typename K, typename V>
@@ -65,6 +67,11 @@ template <typename K, typename V>
 Map<K, V>::Pair::Pair(K key_, V value_) {
     key = key_;
     value = value_;
+}
+
+template <typename K, typename V>
+Map<K, V>::~Map() {
+	delete mapData;
 }
 
 #endif

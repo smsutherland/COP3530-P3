@@ -7,6 +7,6 @@ template <typename K, typename V>
 class AVLMap : public Map<K, V>{
 public:
     AVLMap(){
-        mapData = avl();
+        Map<K, V>::mapData = new avl<typename Map<K, V>::Pair>();
     }
 };

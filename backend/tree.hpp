@@ -11,7 +11,7 @@ public:
 
 	virtual void remove(T& x) = 0;
 
-	virtual T& getRef(T& x) = 0;
+	virtual T& getRef(T x) = 0;
 
 	virtual ~Tree() {}
 	
