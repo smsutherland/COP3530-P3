@@ -1,7 +1,7 @@
 #pragma once
 #include <algorithm>
 #include <string>
-#include <exception>
+#include <stdexcept>
 
 template <typename T>
 class avl {
