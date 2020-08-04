@@ -149,7 +149,7 @@ void Go(){
     }
 
     if(groups[0].isVisible()){
-        println("taking params from group 0");
+        // println("taking params from group 0");
         params[1] = cp5.get(Textfield.class, "Date Lower Bound").getText();
         params[2] = cp5.get(Textfield.class, "Date Upper Bound").getText();
         if(!isViableDate(params[1]) || !isViableDate(params[2])){
@@ -158,37 +158,39 @@ void Go(){
         }
     }
     else{
-        println("not taking params from group 0");
+        // println("not taking params from group 0");
         params[1] = "-1";
         params[2] = "-1";
     }
 
     if(groups[1].isVisible()){
-        println("taking params from group 1");
+        // println("taking params from group 1");
         params[3] = cp5.get(Textfield.class, "Time Lower Bound").getText();
         params[4] = cp5.get(Textfield.class, "Time Upper Bound").getText();
         if(!isViableTime(params[3]) || !isViableTime(params[4])){
             alert("Make sure your time is written as a decimal number of seconds.");
             return;
         }
+        params[3] = "" + (int)(float(params[3]) * 100);
+        params[4] = "" + (int)(float(params[4]) * 100);
     }
     else{
-        println("not taking params from group 1");
+        // println("not taking params from group 1");
         params[3] = "-1";
         params[4] = "-1";
     }
 
     if(groups[2].isVisible()){
-        println("taking params from group 2");
+        // println("taking params from group 2");
         params[5] = cp5.get(RadioButton.class, "Single/Average").getState(0) ? "1" : "0";
     }
     else{
-        println("not taking params from group 2");
+        // println("not taking params from group 2");
         params[5] = "1";
     }
 
     params[6] = cp5.get(RadioButton.class, "Tree Type").getState(0) ? "1" : "0";
-    println(params);
+    execute();
 }
 
 boolean isViableDate(String str){
@@ -285,5 +287,18 @@ void drawHistogram(JSONArray histogramData, int x, int y, color axisColor, color
     line(x, y, x, y - maxHeight*heightScale);
 }
 
-
-//{"222", "333", "333bf", "333oh", "444", "444bf", "555", "555bf", "666", "777"}
+void execute(){
+    String paramsStr = "";
+    for(int i = 0; i < params.length; i++){
+        paramsStr += " " + params[i];
+    }
+    println("..\\backend\\main.exe" + paramsStr);
+    try{
+        // Process pr = Runtime.getRuntime().exec("..\\backend\\main.exe" + params);
+        Process pr = Runtime.getRuntime().exec("\"C:\\Users\\sagan\\Documents\\Actual Documents\\UF Documents\\Summer 2020\\COP3530\\Projects\\COP3530-P3\\backend\\main.exe\"" + params);
+        pr.waitFor();
+        print("made it!");
+    }
+    catch(IOException e){println("IOException");}
+    catch(InterruptedException e){println("Interrupted");}
+}
