@@ -2,7 +2,7 @@
 #include <algorithm>
 #include <string>
 template <typename T>
-class avl {
+class avlBase : public Tree<T> {
 public:
     struct node {
         T key;
@@ -13,17 +13,18 @@ public:
     };
     node *root = nullptr;
     int n{};
-    void insert(T x)
+    void insert(const T &x)
     {
         root = insertUtil(root, x);
     }
-    void remove(T x)
+    void remove(const T &x)
     {
         root = removeUtil(root, x);
     }
-    node *search(T x)
+    //return number of elements that fit the given range
+    int search(const T &from, const T &to) const
     {
-        return searchUtil(root, x);
+        return searchUtil(root, from, to);
     }
     template <typename UnaryOp>
     node *searchName(std::string &str, UnaryOp &op)
@@ -146,17 +147,24 @@ private:
         }
         return head;
     }
-    node *searchUtil(node *head, T x)
+    int searchUtil(node *current, const T &from, const T &to) const
     {
-        if (!head)
-            return head;
-        T k = head->key;
-        if (k == x)
-            return head;
-        if (k > x)
-            return searchUtil(head->left, x);
-        if (k < x)
-            return searchUtil(head->right, x);
+        if (!current) //empty current root
+            return 0;
+        T k = current->key;
+        if (k >= from && k <= to) //fall in range
+        {
+            return 1 + searchUtil(current->left, from, to) +
+                   searchUtil(current->right, from, to);
+        }
+        else if (k < from) //left outside of range [from:to]
+        {
+            return searchUtil(current->right, from, to);
+        }
+        else //right outside of range [from:to]
+        {
+            return searchUtil(current->left, from, to);
+        }
     }
     //the op is supposed to return a specific string according to to the given *head
     template <typename unaryOP>
