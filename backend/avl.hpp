@@ -2,7 +2,7 @@
 #include <algorithm>
 #include <string>
 template <typename T>
-class avlBase {
+class avl {
 public:
     struct node {
         T key;
@@ -25,9 +25,10 @@ public:
     {
         return searchUtil(root, x);
     }
-    node *searchName(std::string &str)
+    template <typename UnaryOp>
+    node *searchName(std::string &str, UnaryOp &op)
     {
-        //to be decided after deciding the key
+        return searchNameUtil(root, str, op);
     }
 
 private:
@@ -157,16 +158,18 @@ private:
         if (k < x)
             return searchUtil(head->right, x);
     }
-    node *searchNameUtil(node *head, std::string &str)
+    //the op is supposed to return a specific string according to to the given *head
+    template <typename unaryOP>
+    node *searchNameUtil(node *head, std::string &str, unaryOP &op)
     {
         if (!head)
             return head;
-        std::string nm = head->key.Name;
+        auto nm = op(head);
         if (nm == str)
             return head;
         if (nm > str)
-            return searchNameUtil(head->left, str);
+            return searchNameUtil(head->left, str, op);
         if (nm < str)
-            return searchNameUtil(head->right, str);
+            return searchNameUtil(head->right, str, op);
     }
 };
