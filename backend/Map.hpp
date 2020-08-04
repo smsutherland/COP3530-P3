@@ -4,7 +4,7 @@
 #include "Bucket.hpp"
 #include "Tree.hpp"
 #include <vector>
-
+#include <stdexcept>
 template <typename K, typename V>
 class Map {
 public:
@@ -27,9 +27,8 @@ public:
 	V& operator[](K key);
 	void remove(K key);
 
+    virtual ~Map() = 0;
 
-	virtual ~Map() = 0 {}
-	
 private:
 	Tree mapData;
 };
