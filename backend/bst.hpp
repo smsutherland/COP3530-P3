@@ -3,7 +3,7 @@
 
 #include "tree.hpp"
 #include <algorithm>
-#include <exception>
+#include <stdexcept>
 
 template <typename T>
 class bstBase: public Tree<T> {
@@ -27,7 +27,7 @@ public:
 		root = removeUtil(root, x);
 	}
 
-	T& getRef(T& x){
+	T& getRef(T x){
 		return getRefUtil(root, x);
 	}
 
@@ -93,11 +93,11 @@ private:
 			throw std::out_of_range("This data is not in the tree.");
 		
 		if(x == current->key)
-			return current->key;
+			return current;
 		if(x > current->key)
-			return getRefUtil(current->right, x);
+			return getRefUtil(current->right, x)->key;
 		else
-			return getRefUtil(current->left, x);
+			return getRefUtil(current->left, x)->key;
 	}
 
 	// clear avl

@@ -1,10 +1,13 @@
-#pragma once
+#ifndef _AVL_H
+#define _AVL_H
+
+#include "tree.hpp"
 #include <algorithm>
 #include <string>
 #include <stdexcept>
 
 template <typename T>
-class avl {
+class avl : public Tree<T> {
     struct node {
         T key;
         int height = 1;
@@ -17,17 +20,17 @@ class avl {
 public:
     int size{};
 
-    void insert(T x)
+    void insert(T& x)
     {
         root = insertUtil(root, x);
     }
 
-    void remove(T x)
+    void remove(T& x)
     {
         root = removeUtil(root, x);
     }
 
-	T& getRef(T& x){
+	T& getRef(T x){
 		return getRefUtil(root, x);
 	}
 
@@ -188,3 +191,5 @@ private:
             return searchNameUtil(head->right, str, op);
     }
 };
+
+#endif

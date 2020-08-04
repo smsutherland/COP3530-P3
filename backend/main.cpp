@@ -2,6 +2,8 @@
 #include "avl.hpp"
 #include "bst.hpp"
 #include "map.hpp"
+#include "AVLMap.hpp"
+#include "BSTMap.hpp"
 #include "Bucket.hpp"
 
 #include <iostream>
@@ -12,32 +14,18 @@
 using namespace std;
 
 //test map with 
-void test(Tree<int>* tree) {
+void test(Map<int, string>* map) {
 
-	Map map(tree);
-
-	ifstream input;
-	input.open("newData.tsv");
-	string line;//a line
-
-	string eventId;
-	int best, average, value1, value2, value3, value4, value5;
-
-	//eventId best average value1 value2 value3 value4 value5
-	getline(input, line);//ignore the first line
-	if (input.good()) {
-		
-		while (input >> eventId >> best >> average >> value1 >> value2 >> value3 >> value4 >> value5)
-		{
-			map.insert(best);
+	for(int i = 0; i < 10; i++){
+		string str = "";
+		for(int j = 0; j < i; j++){
+			str += (char)(i + 97);
 		}
+
+		(*map)[i] = str;
 	}
-
-	vector<Bucket> results = map.search(1968, 2452);
-
-	for (vector<Bucket>::iterator it = results.begin(); it != results.end(); ++it)
-	{
-		cout << it->from << "-" << it->to << ": " << it->count << endl;
+	for(int i = 0; i < 10; i++){
+		cout << (*map)[i] << endl;
 	}
 }
 
@@ -46,10 +34,10 @@ void test(Tree<int>* tree) {
 int main() {
 
 	cout << "Test Map with AVL" << endl;
-	test(new avlBase<int>());
+	test(new AVLMap<int, string>());
 
 	cout << endl << "Test Map with BST" << endl;
-	test(new bstBase<int>());
+	//test(new BSTMap<int, string>());
 
 	return 0;
 }

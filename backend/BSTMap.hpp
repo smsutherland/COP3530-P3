@@ -7,6 +7,6 @@ template <typename K, typename V>
 class BSTMap : public Map<K, V>{
 public:
     BSTMap(){
-        mapData = bstBase();
+        Map<K, V>::mapData = new bstBase<typename Map<K, V>::Pair>();
     }
 };
