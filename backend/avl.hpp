@@ -1,9 +1,10 @@
 #pragma once
 #include <algorithm>
 #include <string>
+#include <exception>
+
 template <typename T>
-class avlBase : public Tree<T> {
-public:
+class avl {
     struct node {
         T key;
         int height = 1;
@@ -11,26 +12,32 @@ public:
         node *right = nullptr;
         node(T k) : key(k) {}
     };
+
     node *root = nullptr;
-    int n{};
-    void insert(const T &x)
+public:
+    int size{};
+
+    void insert(T x)
     {
         root = insertUtil(root, x);
     }
-    void remove(const T &x)
+
+    void remove(T x)
     {
         root = removeUtil(root, x);
     }
-    //return number of elements that fit the given range
-    int search(const T &from, const T &to) const
-    {
-        return searchUtil(root, from, to);
-    }
+
+	T& getRef(T& x){
+		return getRefUtil(root, x);
+	}
+
     template <typename UnaryOp>
     node *searchName(std::string &str, UnaryOp &op)
     {
         return searchNameUtil(root, str, op);
     }
+
+
 
 private:
     int height(node *head)
@@ -40,10 +47,12 @@ private:
         }
         return head->height;
     }
+
     int maxLR(node *nd)
     {
         return std::max(height(nd->left), height(nd->right));
     }
+
     node *rightRotation(node *head)
     {
         node *newhead = head->left;
@@ -53,6 +62,7 @@ private:
         newhead->height = 1 + maxLR(head);
         return newhead;
     }
+
     node *leftRotation(node *head)
     {
         node *newhead = head->right;
@@ -62,10 +72,11 @@ private:
         newhead->height = 1 + maxLR(head);
         return newhead;
     }
+
     node *insertUtil(node *head, T x)
     {
         if (!head) {
-            ++n;
+            ++size;
             node *temp = new node(x);
             return temp;
         }
@@ -95,6 +106,7 @@ private:
         }
         return head;
     }
+
     node *removeUtil(node *head, T x)
     {
         if (!head)
@@ -147,25 +159,20 @@ private:
         }
         return head;
     }
-    int searchUtil(node *current, const T &from, const T &to) const
-    {
-        if (!current) //empty current root
-            return 0;
-        T k = current->key;
-        if (k >= from && k <= to) //fall in range
-        {
-            return 1 + searchUtil(current->left, from, to) +
-                   searchUtil(current->right, from, to);
-        }
-        else if (k < from) //left outside of range [from:to]
-        {
-            return searchUtil(current->right, from, to);
-        }
-        else //right outside of range [from:to]
-        {
-            return searchUtil(current->left, from, to);
-        }
-    }
+
+    // return a reference to an element equaling x
+	T& getRefUtil(node* current, T x){
+		if(current == nullptr)
+			throw std::out_of_range("This data is not in the tree.");
+		
+		if(x == current->key)
+			return current->key;
+		if(x > current->key)
+			return getRefUtil(current->right, x);
+		else
+			return getRefUtil(current->left, x);
+	}
+
     //the op is supposed to return a specific string according to to the given *head
     template <typename unaryOP>
     node *searchNameUtil(node *head, std::string &str, unaryOP &op)

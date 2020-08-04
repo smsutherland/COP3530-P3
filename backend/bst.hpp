@@ -3,10 +3,10 @@
 
 #include "tree.hpp"
 #include <algorithm>
+#include <exception>
 
 template <typename T>
 class bstBase: public Tree<T> {
-public:
 	struct node {
 		T key;
 		node *left = nullptr;
@@ -14,24 +14,21 @@ public:
 		node(T k) : key(k) {}
 	};
 
-	//root node
 	node *root = nullptr;
+public:
 
-	//insert
 	void insert(const T& x)
 	{
 		root = insertUtil(root, x);
 	}
 
-	//remove
 	void remove(const T& x)
 	{
 		root = removeUtil(root, x);
 	}
 
-	//search in range (count)
-	int search(const T& from, const T& to) const{
-		return searchUtil(root, from, to);
+	T& getRef(T& x){
+		return getRefUtil(root, x);
 	}
 
 	//destructor
@@ -90,27 +87,17 @@ private:
 		return head;
 	}
 
-	//search in range (count)
-	int searchUtil(node *current, const T& from, const T& to) const
-	{
-		if (!current) //empty current root
-			return 0;
-
-		T k = current->key;
-
-		if (k >= from && k <= to)//fall in range
-		{
-			return 1 + searchUtil(current->left, from, to) +
-				searchUtil(current->right, from, to);
-		}
-		else if (k < from) //left outside of range [from:to]
-		{
-			return searchUtil(current->right, from, to);
-		}
-		else //right outside of range [from:to]
-		{
-			return searchUtil(current->left, from, to);
-		}
+	// return a reference to an element equaling x
+	T& getRefUtil(node* current, T x){
+		if(current == nullptr)
+			throw std::out_of_range("This data is not in the tree.");
+		
+		if(x == current->key)
+			return current->key;
+		if(x > current->key)
+			return getRefUtil(current->right, x);
+		else
+			return getRefUtil(current->left, x);
 	}
 
 	// clear avl

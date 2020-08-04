@@ -4,7 +4,7 @@
 #include "bst.hpp"
 
 template <typename K, typename V>
-class BSTMap : Map<K, V>{
+class BSTMap : public Map<K, V>{
 public:
     BSTMap(){
         mapData = bstBase();
