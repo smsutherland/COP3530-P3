@@ -1,2 +1,5 @@
 /.vscode
 /backend/main
+*.exe
+*.o
+*.tsv
