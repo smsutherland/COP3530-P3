@@ -176,21 +176,6 @@ private:
         else
             return getRefUtil(current->left, x);
     }
-
-    //the op is supposed to return a specific string according to to the given *head
-    template <typename unaryOP>
-    node *searchNameUtil(node *head, std::string &str, unaryOP &op)
-    {
-        if (!head)
-            return head;
-        auto nm = op(head);
-        if (nm == str)
-            return head;
-        if (nm > str)
-            return searchNameUtil(head->left, str, op);
-        if (nm < str)
-            return searchNameUtil(head->right, str, op);
-    }
 };
 
 #endif
