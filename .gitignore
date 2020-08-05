@@ -1,4 +1,5 @@
 */.vscode
+/.vscode
 /backend/main
 *.exe
 *.o

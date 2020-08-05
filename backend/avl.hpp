@@ -3,8 +3,8 @@
 
 #include "tree.hpp"
 #include <algorithm>
-#include <string>
 #include <stdexcept>
+#include <string>
 
 template <typename T>
 class avl : public Tree<T> {
@@ -17,6 +17,7 @@ class avl : public Tree<T> {
     };
 
     node *root = nullptr;
+
 public:
     int size{};
 
@@ -30,17 +31,16 @@ public:
         root = removeUtil(root, x);
     }
 
-	T& getRef(T x){
-		return getRefUtil(root, x);
-	}
+    T &getRef(T x)
+    {
+        return getRefUtil(root, x);
+    }
 
     template <typename UnaryOp>
     node *searchName(std::string &str, UnaryOp &op)
     {
         return searchNameUtil(root, str, op);
     }
-
-
 
 private:
     int height(node *head)
@@ -71,15 +71,15 @@ private:
         node *newhead = head->right;
         head->right = newhead->left;
         newhead->left = head;
-        head->height = 1 + maxLR(head);
-        newhead->height = 1 + maxLR(head);
+        head->height = 1 + std::max(height(head->left), height(head->right));
+        newhead->height = 1 + std::max(height(newhead->left), height(newhead->right));
         return newhead;
     }
 
     node *insertUtil(node *head, T x)
     {
         if (!head) {
-            ++size;
+            size += 1;
             node *temp = new node(x);
             return temp;
         }
@@ -87,7 +87,7 @@ private:
             head->left = insertUtil(head->left, x);
         else if (x > head->key)
             head->right = insertUtil(head->right, x);
-        head->height = 1 + maxLR(head);
+        head->height = 1 + std::max(height(head->left), height(head->right));
         int bal = height(head->left) - height(head->right);
         if (bal > 1) {
             if (x < head->left->key) {
@@ -164,17 +164,18 @@ private:
     }
 
     // return a reference to an element equaling x
-	T& getRefUtil(node* current, T x){
-		if(current == nullptr)
-			throw std::out_of_range("This data is not in the tree.");
-		
-		if(x == current->key)
-			return current->key;
-		if(x > current->key)
-			return getRefUtil(current->right, x);
-		else
-			return getRefUtil(current->left, x);
-	}
+    T &getRefUtil(node *current, T x)
+    {
+        if (current == nullptr)
+            throw std::out_of_range("This data is not in the tree.");
+
+        if (x == current->key)
+            return current->key;
+        if (x > current->key)
+            return getRefUtil(current->right, x);
+        else
+            return getRefUtil(current->left, x);
+    }
 
     //the op is supposed to return a specific string according to to the given *head
     template <typename unaryOP>
