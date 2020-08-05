@@ -29,7 +29,8 @@ void test(Map<int, string>* map) {
 	}
 }
 
-void loadData(string eventID, string dateLower, string dateUpper, int timeLower, int timeUpper, bool singleOrAverage, bool AVLOrBST);
+void loadData(string eventID, string dateLower, string dateUpper, int timeLower, int timeUpper, bool averageOrSingle, bool AVLOrBST);
+void exportData(Map<Bucket, unsigned int>* data);
 vector<Bucket> generateBuckets(int lower, int upper, string eventID);
 void loadCompetitions(Map<string, SimpleDate>* compMap);
 vector<string> split(const std::string& str, char delim = '\t');
@@ -48,15 +49,15 @@ int main(int argc, char** argv) {
 		string dateUpper = argv[3];
 		int timeLower = stoi(argv[4]);
 		int timeUpper = stoi(argv[5]);
-		bool singleOrAverage = stoi(argv[6]);
+		bool averageOrSingle = stoi(argv[6]);
 		bool AVLOrBST = stoi(argv[7]);
-		cout << eventID << dateLower << dateUpper << timeLower << timeUpper << singleOrAverage << AVLOrBST << endl;
-		loadData(eventID, dateLower, dateUpper, timeLower, timeUpper, singleOrAverage, AVLOrBST);
+		cout << eventID << dateLower << dateUpper << timeLower << timeUpper << averageOrSingle << AVLOrBST << endl;
+		loadData(eventID, dateLower, dateUpper, timeLower, timeUpper, averageOrSingle, AVLOrBST);
 	}
 	return 0;
 }
 
-void loadData(string eventID, string dateLower, string dateUpper, int timeLower, int timeUpper, bool singleOrAverage, bool AVLOrBST){
+void loadData(string eventID, string dateLower, string dateUpper, int timeLower, int timeUpper, bool averageOrSingle, bool AVLOrBST){
 	ifstream timesFile("times.tsv");
 	Map<Bucket, unsigned int>* histogramData = nullptr;
 	Map<string, SimpleDate>* competitionDates = nullptr;
@@ -69,7 +70,56 @@ void loadData(string eventID, string dateLower, string dateUpper, int timeLower,
 		competitionDates = new BSTMap<string, SimpleDate>();
 	}
 	vector<Bucket> buckets = generateBuckets(timeLower, timeUpper, eventID);
-	loadCompetitions(competitionDates);
+
+	for(unsigned int i = 0; i < buckets.size(); i++)
+		(*histogramData)[buckets[i]];
+
+	bool usingDate = (dateLower != "-1") && (dateUpper != "-1");
+
+	if(usingDate){
+		loadCompetitions(competitionDates);
+	}
+
+	SimpleDate lower(dateLower);
+	SimpleDate upper(dateUpper);
+
+	if(timesFile.is_open()){
+		string line;
+		vector<string> parts;
+		getline(timesFile, line); // pass first line w/ column headers
+		while(getline(timesFile, line)){
+			parts = split(line);
+
+			if(parts[1] != eventID)
+				continue;
+			
+			if(usingDate){
+				SimpleDate date = (*competitionDates)[parts[0]];
+				if((date < lower) || (date > upper))
+					continue;
+			}
+
+			if(averageOrSingle){
+				for(unsigned int i = 0; i < buckets.size(); i++){
+					if(buckets[i].in(stoi(parts[2]))){
+						(*histogramData)[buckets[i]]++;
+					}
+				}
+			}
+			else{
+				for(unsigned int i = 0; i < buckets.size(); i++){
+					for(int j = 3; j <= 7; j++){
+						if(buckets[i].in(stoi(parts[j]))){
+							(*histogramData)[buckets[i]]++;
+						}
+					}
+				}
+			}
+		}
+	}
+	timesFile.close();
+
+	exportData(histogramData);
 }
 
 vector<Bucket> generateBuckets(int lower, int upper, string eventID){
@@ -122,6 +172,7 @@ void loadCompetitions(Map<string, SimpleDate>* compMap){
 		getline(compFile, line); // pass first line w/ column headers
 		while(getline(compFile, line)){
 			parts = split(line);
+
 			string id = parts[0];
 			int year = stoi(parts[1]);
 			int month = stoi(parts[2]);
@@ -129,6 +180,7 @@ void loadCompetitions(Map<string, SimpleDate>* compMap){
 			(*compMap)[id] = SimpleDate(year, month, day);
 		}
 	}
+	compFile.close();
 }
 
 vector<string> split(const std::string& str, char delim){
@@ -139,4 +191,8 @@ vector<string> split(const std::string& str, char delim){
         splits.push_back(part);
     }
 	return splits;
+}
+
+void exportData(Map<Bucket, unsigned int>* data){
+	
 }

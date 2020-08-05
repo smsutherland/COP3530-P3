@@ -5,17 +5,23 @@ class Bucket {
 public:
 
 	//default constructor
-	Bucket() : from(0), to(0), count(0) {
-	}
+	Bucket() : from(0), to(0) {}
 
 	//constructor
-	Bucket (int low, int high, int cnt): from(low), to(high), count(cnt){
-	}
+	Bucket (int from_, int to_): from(from_), to(to_){}
 	
 	//[from:to] with count
 	int from;
 	int to;
-	int count;
+
+	bool in(int n) {return (n >= from) && (n <= to);}
+
+	bool operator>(const Bucket& other) {return from > other.from;}
+    bool operator>=(const Bucket& other) {return from >= other.from;}
+    bool operator<(const Bucket& other) {return from < other.from;}
+    bool operator<=(const Bucket& other) {return from <= other.from;}
+    bool operator==(const Bucket& other) {return (from == other.from) && (to == other.to);}
+    bool operator!=(const Bucket& other) {return !(*this == other);}
 };
 
 #endif
