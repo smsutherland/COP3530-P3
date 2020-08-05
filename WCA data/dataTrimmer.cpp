@@ -37,7 +37,7 @@ int main(int argc, char** argv){
     std::ifstream inFile(filename);
     std::string newFilename = "newData.tsv";
     std::vector<std::string> roundTypes = {"222", "333", "333bf", "333oh", "444", "444bf", "555", "555bf", "666", "777"};
-    std::vector<bool> releventColumns = {1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0};
+    std::vector<bool> releventColumns = {1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0};
 
     std::ofstream outFile(newFilename);
     unsigned int numLines = 0;
