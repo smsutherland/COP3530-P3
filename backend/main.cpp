@@ -25,7 +25,9 @@ void test(Map<int, string>* map) {
 		(*map)[i] = str;
 	}
 	for(int i = 0; i < 10; i++){
+		cout << (*map)[i] << endl;
 	}
+	delete map;
 }
 
 void loadData(string eventID, string dateLower, string dateUpper, int timeLower, int timeUpper, bool averageOrSingle, bool AVLOrBST);
