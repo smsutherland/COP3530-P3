@@ -157,9 +157,9 @@ vector<Bucket> generateBuckets(int lower, int upper, string eventID){
 			upper = 30000;
 		}
 	}
-	vector<Bucket> buckets(10);
-	float bucketSize = (upper - lower)/10.0f;
-	for(int i = 0; i < 10; i++){
+	vector<Bucket> buckets(25);
+	float bucketSize = (upper - lower)/(float)buckets.size();
+	for(unsigned int i = 0; i < buckets.size(); i++){
 		buckets[i] = (Bucket(lower + i*bucketSize, lower + (i+1)*bucketSize));
 		Bucket b(lower + i*bucketSize, lower + (i+1)*bucketSize);
 	}

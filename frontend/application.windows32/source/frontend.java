@@ -1,6 +1,26 @@
-import controlP5.*;
-import java.util.*;
-import java.time.*;
+import processing.core.*; 
+import processing.data.*; 
+import processing.event.*; 
+import processing.opengl.*; 
+
+import controlP5.*; 
+import java.util.*; 
+import java.time.*; 
+
+import java.util.HashMap; 
+import java.util.ArrayList; 
+import java.io.File; 
+import java.io.BufferedReader; 
+import java.io.PrintWriter; 
+import java.io.InputStream; 
+import java.io.OutputStream; 
+import java.io.IOException; 
+
+public class frontend extends PApplet {
+
+
+
+
 
 ControlP5 cp5;
 JSONArray arr = null;
@@ -14,14 +34,14 @@ String timeMessage = "";
 PFont arial12;
 PFont arial14;
 
-void setup() {
+public void setup() {
 
     arial12 = createFont("arial", 12);
     arial14 = createFont("arial", 14);
 
     // arr = loadJSONArray("samplejson.json");
 
-    size(500, 500);
+    
     cp5 = new ControlP5(this);
     List events = Arrays.asList("2x2x2", "3x3x3", "3x3x3 blindfolded", "3x3x3 one-handed", "4x4x4", "4x4x4 blindfolded", "5x5x5", "5x5x5 blindfolded", "6x6x6", "7x7x7");
 
@@ -124,7 +144,7 @@ void setup() {
     params[0] = "-1";
 }
 
-void draw() {
+public void draw() {
     noStroke();
     background(255);
     fill(0);
@@ -137,19 +157,19 @@ void draw() {
 
 }
 
-void updateEventID(int eventIndex){
+public void updateEventID(int eventIndex){
     String[] eventIDs = {"222", "333", "333bf", "333oh", "444", "444bf", "555", "555bf", "666", "777"};
     println("Set eventID to", eventIDs[eventIndex]);
     params[0] = eventIDs[eventIndex];
 }
 
-void Options(float[] options){
+public void Options(float[] options){
     for(int i = 0; i < options.length; i++){
         groups[i].setVisible(options[i] == 1);
     }
 }
 
-void Go(){
+public void Go(){
     if(params[0] == "-1"){
         alert("Please select an event.");
         return;
@@ -178,8 +198,8 @@ void Go(){
             alert("Make sure your time is written as a decimal number of seconds.");
             return;
         }
-        params[3] = "" + (int)(float(params[3]) * 100);
-        params[4] = "" + (int)(float(params[4]) * 100);
+        params[3] = "" + (int)(PApplet.parseFloat(params[3]) * 100);
+        params[4] = "" + (int)(PApplet.parseFloat(params[4]) * 100);
     }
     else{
         // println("not taking params from group 1");
@@ -200,7 +220,7 @@ void Go(){
     execute();
 }
 
-boolean isViableDate(String str){
+public boolean isViableDate(String str){
     if(str.length() != 10){
         return false;
     }
@@ -212,17 +232,17 @@ boolean isViableDate(String str){
     String yearStr = str.substring(6, 10);
 
     try{
-        int month = int(monthStr);
+        int month = PApplet.parseInt(monthStr);
         if(month < 1 || month > 12){
             return false;
         }
 
-        int day = int(dayStr);
+        int day = PApplet.parseInt(dayStr);
         if(day < 1 || day > 31){
             return false;
         }
 
-        int year = int(yearStr);
+        int year = PApplet.parseInt(yearStr);
         if(year < 0){
             return false;
         }
@@ -233,12 +253,12 @@ boolean isViableDate(String str){
     return true;
 }
 
-boolean isViableTime(String str){
+public boolean isViableTime(String str){
     if(str.length() == 0){
         return false;
     }
     try{
-        float a = float(str);
+        float a = PApplet.parseFloat(str);
         if(a < 0 || Float.isNaN(a)){
             return false;
         }
@@ -249,7 +269,7 @@ boolean isViableTime(String str){
     return true;
 }
 
-void drawAlert(){
+public void drawAlert(){
     fill(0);
     textFont(arial14);
     if(alertDuration > 0){
@@ -258,16 +278,16 @@ void drawAlert(){
     }
 }
 
-void alert(String alert){
+public void alert(String alert){
     alertMessage = alert;
     alertDuration = 300;
 }
 
-void drawHistogram(JSONArray histogramData, int x, int y){
+public void drawHistogram(JSONArray histogramData, int x, int y){
     drawHistogram(histogramData, x, y, color(0), color(255, 0, 0));
 }
 
-void drawHistogram(JSONArray histogramData, int x, int y, color axisColor, color bucketColor){
+public void drawHistogram(JSONArray histogramData, int x, int y, int axisColor, int bucketColor){
     int bucketWidth = 12;
     int bucketMargin = 2;
 
@@ -280,7 +300,7 @@ void drawHistogram(JSONArray histogramData, int x, int y, color axisColor, color
         }
     }
 
-    float heightScale = 275.0/maxHeight;
+    float heightScale = 275.0f/maxHeight;
 
     int fullWidth = histogramData.size()*(bucketWidth + bucketMargin);
     fill(bucketColor);
@@ -291,7 +311,7 @@ void drawHistogram(JSONArray histogramData, int x, int y, color axisColor, color
         rect(bucketStart, y, bucketWidth, -bucketHeight*heightScale);
 
         rotate(PI/2);
-        text(str(thisBucket.getInt("bottom limit")/100.0), y + 5, -bucketStart - bucketMargin/2);
+        text(str(thisBucket.getInt("bottom limit")/100.0f), y + 5, -bucketStart - bucketMargin/2);
         rotate(-PI/2);
     }
     fill(axisColor);
@@ -309,7 +329,7 @@ void drawHistogram(JSONArray histogramData, int x, int y, color axisColor, color
     rotate(PI/2);
 }
 
-void execute(){
+public void execute(){
     String paramsStr = "";
     for(int i = 0; i < params.length; i++){
         paramsStr += " " + params[i];
@@ -326,4 +346,14 @@ void execute(){
     }
     catch(IOException e){println("IOException");}
     catch(InterruptedException e){println("Interrupted");}
+}
+  public void settings() {  size(500, 500); }
+  static public void main(String[] passedArgs) {
+    String[] appletArgs = new String[] { "frontend" };
+    if (passedArgs != null) {
+      PApplet.main(concat(appletArgs, passedArgs));
+    } else {
+      PApplet.main(appletArgs);
+    }
+  }
 }
