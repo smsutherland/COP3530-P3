@@ -254,7 +254,7 @@ void drawAlert(){
     textFont(arial14);
     if(alertDuration > 0){
         alertDuration--;
-        text(alertMessage, 25, 175);
+        text(alertMessage, 50, 170);
     }
 }
 
