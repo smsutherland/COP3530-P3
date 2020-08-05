@@ -119,6 +119,7 @@ void loadData(string eventID, string dateLower, string dateUpper, int timeLower,
 	}
 	timesFile.close();
 
+	delete competitionDates;
 	exportData(histogramData, buckets);
 }
 
@@ -215,4 +216,5 @@ void exportData(Map<Bucket, unsigned int>* data, vector<Bucket> buckets){
 		out << "]";
 	}
 	out.close();
+	delete data;
 }

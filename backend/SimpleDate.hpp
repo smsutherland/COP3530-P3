@@ -9,7 +9,6 @@ struct SimpleDate{
 
     SimpleDate(int year_ = 0, int month_ = 0, int day_ = 0) : year(year_), month(month_), day(day_) {}
     SimpleDate(std::string str);
-    //SimpleDate(const SimpleDate& other) : year(other.year), month(other.month), day(other.day) {}
     
     bool operator>(const SimpleDate& other);
     bool operator>=(const SimpleDate& other);
