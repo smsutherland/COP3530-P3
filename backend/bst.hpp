@@ -17,12 +17,12 @@ class bst : public Tree<T> {
 	node *root = nullptr;
 public:
 
-	void insert(T& x)
+	void insert(T x)
 	{
 		root = insertUtil(root, x);
 	}
 
-	void remove(T& x)
+	void remove(T x)
 	{
 		root = removeUtil(root, x);
 	}
@@ -94,10 +94,10 @@ private:
 		
 		if(x == current->key)
 			return current->key;
-		if(x > current->key)
-			return getRefUtil(current->right, x);
-		else
+		if(x < current->key)
 			return getRefUtil(current->left, x);
+		else
+			return getRefUtil(current->right, x);
 	}
 
 	// clear avl

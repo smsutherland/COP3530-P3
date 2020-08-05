@@ -21,8 +21,8 @@ struct SimpleDate{
 
 SimpleDate::SimpleDate(std::string str){
     month = stoi(str.substr(0, 2));
-    day = stoi(str.substr(3,5));
-    year = stoi(str.substr(6, 10));
+    day = stoi(str.substr(3,2));
+    year = stoi(str.substr(6, 4));
 }
 
 bool SimpleDate::operator>(const SimpleDate& other){

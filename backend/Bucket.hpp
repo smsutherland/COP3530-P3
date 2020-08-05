@@ -1,6 +1,8 @@
 #ifndef _BUCKET_H
 #define _BUCKET_H
 
+#include <string>
+
 class Bucket {
 public:
 
@@ -8,7 +10,7 @@ public:
 	Bucket() : from(0), to(0) {}
 
 	//constructor
-	Bucket (int from_, int to_): from(from_), to(to_){}
+	Bucket(int from_, int to_): from(from_), to(to_){}
 	
 	//[from:to] with count
 	int from;

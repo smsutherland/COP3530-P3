@@ -25,12 +25,11 @@ void test(Map<int, string>* map) {
 		(*map)[i] = str;
 	}
 	for(int i = 0; i < 10; i++){
-		cout << (*map)[i] << endl;
 	}
 }
 
 void loadData(string eventID, string dateLower, string dateUpper, int timeLower, int timeUpper, bool averageOrSingle, bool AVLOrBST);
-void exportData(Map<Bucket, unsigned int>* data);
+void exportData(Map<Bucket, unsigned int>* data, vector<Bucket> buckets);
 vector<Bucket> generateBuckets(int lower, int upper, string eventID);
 void loadCompetitions(Map<string, SimpleDate>* compMap);
 vector<string> split(const std::string& str, char delim = '\t');
@@ -38,10 +37,8 @@ vector<string> split(const std::string& str, char delim = '\t');
 //main function to start C++ application
 int main(int argc, char** argv) {
 	if(argc == 1){
-		cout << "Test Map with AVL" << endl;
 		test(new AVLMap<int, string>());
 
-		cout << endl << "Test Map with BST" << endl;
 		test(new BSTMap<int, string>());
 	}else{
 		string eventID = argv[1];
@@ -51,14 +48,14 @@ int main(int argc, char** argv) {
 		int timeUpper = stoi(argv[5]);
 		bool averageOrSingle = stoi(argv[6]);
 		bool AVLOrBST = stoi(argv[7]);
-		cout << eventID << dateLower << dateUpper << timeLower << timeUpper << averageOrSingle << AVLOrBST << endl;
 		loadData(eventID, dateLower, dateUpper, timeLower, timeUpper, averageOrSingle, AVLOrBST);
 	}
 	return 0;
 }
 
+//loads appropriate data from times and competitions.tsv
 void loadData(string eventID, string dateLower, string dateUpper, int timeLower, int timeUpper, bool averageOrSingle, bool AVLOrBST){
-	ifstream timesFile("times.tsv");
+	ifstream timesFile("..\\..\\backend\\times.tsv");
 	Map<Bucket, unsigned int>* histogramData = nullptr;
 	Map<string, SimpleDate>* competitionDates = nullptr;
 	if(AVLOrBST){
@@ -71,17 +68,20 @@ void loadData(string eventID, string dateLower, string dateUpper, int timeLower,
 	}
 	vector<Bucket> buckets = generateBuckets(timeLower, timeUpper, eventID);
 
-	for(unsigned int i = 0; i < buckets.size(); i++)
+	for(unsigned int i = 0; i < buckets.size(); i++){
 		(*histogramData)[buckets[i]];
+	}
 
 	bool usingDate = (dateLower != "-1") && (dateUpper != "-1");
 
+	SimpleDate lower;
+	SimpleDate upper;
 	if(usingDate){
 		loadCompetitions(competitionDates);
+		lower = SimpleDate(dateLower);
+		upper = SimpleDate(dateUpper);
 	}
 
-	SimpleDate lower(dateLower);
-	SimpleDate upper(dateUpper);
 
 	if(timesFile.is_open()){
 		string line;
@@ -101,7 +101,7 @@ void loadData(string eventID, string dateLower, string dateUpper, int timeLower,
 
 			if(averageOrSingle){
 				for(unsigned int i = 0; i < buckets.size(); i++){
-					if(buckets[i].in(stoi(parts[2]))){
+					if(buckets[i].in(stoi(parts[2])) && stoi(parts[2]) > 0){
 						(*histogramData)[buckets[i]]++;
 					}
 				}
@@ -109,7 +109,7 @@ void loadData(string eventID, string dateLower, string dateUpper, int timeLower,
 			else{
 				for(unsigned int i = 0; i < buckets.size(); i++){
 					for(int j = 3; j <= 7; j++){
-						if(buckets[i].in(stoi(parts[j]))){
+						if(buckets[i].in(stoi(parts[j])) && stoi(parts[j]) > 0){
 							(*histogramData)[buckets[i]]++;
 						}
 					}
@@ -119,9 +119,10 @@ void loadData(string eventID, string dateLower, string dateUpper, int timeLower,
 	}
 	timesFile.close();
 
-	exportData(histogramData);
+	exportData(histogramData, buckets);
 }
 
+//generates the buckets corresponding to the time range
 vector<Bucket> generateBuckets(int lower, int upper, string eventID){
 	if(upper == -1 || lower == -1){
 		lower = 0;
@@ -157,15 +158,17 @@ vector<Bucket> generateBuckets(int lower, int upper, string eventID){
 		}
 	}
 	vector<Bucket> buckets(10);
-	float bucketSize = (upper - lower)/10;
+	float bucketSize = (upper - lower)/10.0f;
 	for(int i = 0; i < 10; i++){
-		buckets.push_back(Bucket(lower + i*bucketSize, lower + (i+1)*bucketSize));
+		buckets[i] = (Bucket(lower + i*bucketSize, lower + (i+1)*bucketSize));
+		Bucket b(lower + i*bucketSize, lower + (i+1)*bucketSize);
 	}
 	return buckets;
 }
 
+//creates the map from competition id to date
 void loadCompetitions(Map<string, SimpleDate>* compMap){
-	ifstream compFile("competitions.tsv");
+	ifstream compFile("..\\..\\backend\\competitions.tsv");
 	if(compFile.is_open()){
 		string line;
 		vector<string> parts;
@@ -183,6 +186,7 @@ void loadCompetitions(Map<string, SimpleDate>* compMap){
 	compFile.close();
 }
 
+//splits a string at each delim
 vector<string> split(const std::string& str, char delim){
 	vector<string> splits;
     std::stringstream ss(str);
@@ -193,6 +197,22 @@ vector<string> split(const std::string& str, char delim){
 	return splits;
 }
 
-void exportData(Map<Bucket, unsigned int>* data){
-	
+//takes the time data map and turns it into a json
+void exportData(Map<Bucket, unsigned int>* data, vector<Bucket> buckets){
+	ofstream out("data\\HistogramOutput.json");
+	if(out.is_open()){
+		out << "[";
+		for(unsigned int i = 0; i < buckets.size(); i++){
+			if(i != 0)
+				out << ",";
+			
+			out << "{";
+			out << "\"bottom limit\": " << buckets[i].from << ",";
+			out << "\"top limit\": " << buckets[i].to << ",";
+			out << "\"height\": " << (*data)[buckets[i]];
+			out << "}";
+		}
+		out << "]";
+	}
+	out.close();
 }

@@ -40,9 +40,8 @@ V& Map<K, V>::operator[](K key) {
         return mapData->getRef(Pair(key)).value;
     }
     catch (std::out_of_range&) {
-		Pair p(key);
-        mapData->insert(p);
-		return mapData->getRef(Pair(key)).value;
+        mapData->insert(Pair(key));
+        return mapData->getRef(Pair(key)).value;
     }
 }
 

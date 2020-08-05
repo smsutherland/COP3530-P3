@@ -20,12 +20,12 @@ class avl : public Tree<T> {
 public:
     int size{};
 
-    void insert(T& x)
+    void insert(T x)
     {
         root = insertUtil(root, x);
     }
 
-    void remove(T& x)
+    void remove(T x)
     {
         root = removeUtil(root, x);
     }
